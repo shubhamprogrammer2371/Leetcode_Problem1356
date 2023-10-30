@@ -1,0 +1,41 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int cmpfnc(const void* a, const void * b){
+    int temp_a = *(int*)a , temp_b = *(int*)b , count_one_a = 0 , count_one_b = 0;
+    while(temp_a) /*Brian Kernighan’s Algorithm to count bits*/
+    {
+        temp_a &= (temp_a - 1);
+        count_one_a++;
+    }
+    while(temp_b) /*Brian Kernighan’s Algorithm to count bits*/
+    {
+        temp_b &= (temp_b - 1);
+        count_one_b++;
+    }
+    if(count_one_a > count_one_b)
+        return 1;
+    else if(count_one_a < count_one_b)
+        return -1;
+    else
+        return *(int*)a - *(int*)b;
+} 
+int* sortByBits(int* arr, int arrSize, int* returnSize){
+  *returnSize = arrSize;
+  qsort(arr,arrSize,sizeof(int),cmpfnc);
+  return arr;
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+int cmpfnc(const void* a, const void* b) 
+{
+    return (__builtin_popcount(*(int*)a) == __builtin_popcount(*(int*)b)) ? *(int*)a - *(int*)b : __builtin_popcount(*(int*)a) - __builtin_popcount(*(int*)b); //  __builtin_popcount() ==> used for counting number of set bits
+}
+
+int* sortByBits(int* arr, int arrSize, int* returnSize) {    
+    qsort((void*)arr, arrSize, sizeof(int), cmpfnc);        
+    *returnSize = arrSize;
+    return arr;
+}
